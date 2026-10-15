@@ -1,0 +1,58 @@
+{
+  "name": "select-line-without-newline",
+  "displayName": "Select Line Without Newline",
+  "description": "Exclude trailing newline character when selecting lines via mouse triple-click",
+  "version": "0.0.1",
+  "publisher": "dai",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other",
+    "Keybindings"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dai/vscode-select-line-without-newline"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Select Line Without Newline",
+      "properties": {
+        "selectLineWithoutNewline.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable automatic exclusion of trailing newline on line selection."
+        },
+        "selectLineWithoutNewline.handleMultiLine": {
+          "type": "boolean",
+          "default": true,
+          "description": "Also exclude trailing newline when selecting multiple lines via triple-click drag."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test:unit": "mocha --ui tdd ./out/test/suite/selectionAdjuster.test.js",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package --no-git-tag-version"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^2.4.0",
+    "@vscode/vsce": "^3.0.0",
+    "glob": "^10.3.10",
+    "mocha": "^10.4.0",
+    "typescript": "^5.4.5"
+  }
+}
