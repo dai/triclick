@@ -47,3 +47,5 @@ Never record authentication secrets in repository files or logs.
 - Initial GitHub CI passed 5/6 jobs. macOS stable failed before tests because
   test-electron 2.5.2 expected the old Electron executable filename. Updated to
   test-electron 3.1.0, which resolves the executable from the app bundle.
+- The updated runner exposed macOS's 103-character Unix socket path limit in
+  this long repository checkout. Test profiles now use unique OS temp directories.
