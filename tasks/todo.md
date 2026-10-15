@@ -16,7 +16,7 @@ Never record authentication secrets in repository files or logs.
 - [x] Run unit tests and extension-host tests on minimum and stable VS Code.
 - [x] Build VSIX and inspect its contents; add reproducible CI and release notes.
 - [x] Create GitHub repository, push reviewed source, verify CI, and attach VSIX to release.
-- [ ] Publish to Marketplace and verify the public listing (or record the exact authentication blocker).
+- [x] Publish to Marketplace and verify the published extension metadata and version.
 
 ## Review focus
 
@@ -41,8 +41,8 @@ Never record authentication secrets in repository files or logs.
   These are test-only dependencies; revisit the overrides when upgrading Mocha.
 - VSIX allowlist inspection contains only manifest, README, license, changelog,
   and two runtime JavaScript files; no runtime dependencies are shipped.
-- GitHub CLI is authenticated as dai. Marketplace CLI token is expired;
-  the user signed into the browser and publisher dai Owner access was verified.
+- GitHub CLI is authenticated as dai. Marketplace publisher dai Owner access was
+  verified, and a fresh PAT was confirmed through vsce verify-pat.
 - Physical mouse-drag behavior has not yet been manually validated.
 - Initial GitHub CI passed 5/6 jobs. macOS stable failed before tests because
   test-electron 2.5.2 expected the old Electron executable filename. Updated to
@@ -51,12 +51,18 @@ Never record authentication secrets in repository files or logs.
   this long repository checkout. Test profiles now use unique OS temp directories.
 - Final CI: all six jobs passed at https://github.com/dai/vscode-select-line-without-newline/actions/runs/38689759614.
 - GitHub release: https://github.com/dai/vscode-select-line-without-newline/releases/tag/v0.0.1.
-- Release VSIX SHA256: 092c7b17252edc6c084b066f7337cc56dd2332354b5c8b21023c59647e05d054.
-- Marketplace remains unpublished: browser upload is blocked by reCAPTCHA Timeout
-  and a quota warning. User was asked to refresh the expired CLI credential using
-  `npx vsce login dai`. Do not publish until credentials are verified, then publish
-  the exact release VSIX and confirm the public listing/version.
+- Corrected the invalid `Keybindings` Marketplace category to `Other`. The first
+  publish attempt was rejected before publication; the corrected VSIX published
+  successfully as dai.select-line-without-newline 0.0.1.
+- Marketplace metadata from `vsce show` confirms version 0.0.1 and category Other.
+- Replaced the GitHub Release VSIX with the corrected package. Its SHA256 is
+  64d297601616a060455fb3a2e206e34e1426d340adfe04a2954d169d6635a9ad.
+- Final CI on the corrected manifest: all six jobs passed at
+  https://github.com/dai/vscode-select-line-without-newline/actions/runs/38691297612.
+- The Marketplace item URL returned 404 in a direct browser check immediately
+  after `vsce publish`, while CLI metadata already showed the published version.
+  Verify the page again after Marketplace propagation.
 - PAT migration copied the expired credential. After the user entered a newly
   created PAT, `vsce verify-pat dai` succeeded. The first VSIX publish attempt
-  exposed the invalid manifest category `Keybindings`; remove it (the extension
-  does not provide keybindings) and retain the valid `Other` category.
+  exposed the invalid manifest category `Keybindings`; it was removed because the
+  extension does not contribute keyboard mappings. The valid `Other` category remains.
