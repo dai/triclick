@@ -1,8 +1,8 @@
 {
   "name": "select-line-without-newline",
-  "displayName": "Select Line Without Newline",
+  "displayName": "TriClick",
   "description": "Exclude trailing newline character when selecting lines via mouse triple-click",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "dai",
   "license": "MIT",
   "homepage": "https://github.com/dai/vscode-select-line-without-newline#readme",
@@ -31,7 +31,7 @@
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Select Line Without Newline",
+      "title": "TriClick",
       "properties": {
         "selectLineWithoutNewline.enabled": {
           "type": "boolean",
@@ -71,5 +71,6 @@
     "glob": "^10.3.10",
     "mocha": "^11.8.0",
     "typescript": "^5.4.5"
-  }
+  },
+  "icon": "icon.png"
 }

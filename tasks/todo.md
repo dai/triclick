@@ -1,5 +1,16 @@
 # Review and publication plan
 
+## TriClick 0.0.2 branding update
+
+- [ ] Rename Marketplace display name to TriClick while keeping the extension ID stable.
+- [ ] Add the extension icon and update Japanese/English README plus changelog.
+- [ ] Run tests, audit, package, and inspect the VSIX contents.
+- [ ] Push to GitHub, publish 0.0.2 through Marketplace web management, and verify both listings.
+
+### Review
+
+Pending verification and publication.
+
 ## Scope and acceptance criteria
 
 Preserve the existing mouse-selection behavior and settings. Review all source,

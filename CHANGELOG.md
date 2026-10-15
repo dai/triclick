@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.2
+
+- Rename the Marketplace display name to TriClick and add an extension icon.
+
 ## 0.0.1
 
 - Exclude the final newline from mouse selections spanning complete lines.
