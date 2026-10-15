@@ -56,3 +56,7 @@ Never record authentication secrets in repository files or logs.
   and a quota warning. User was asked to refresh the expired CLI credential using
   `npx vsce login dai`. Do not publish until credentials are verified, then publish
   the exact release VSIX and confirm the public listing/version.
+- PAT migration copied the expired credential. After the user entered a newly
+  created PAT, `vsce verify-pat dai` succeeded. The first VSIX publish attempt
+  exposed the invalid manifest category `Keybindings`; remove it (the extension
+  does not provide keybindings) and retain the valid `Other` category.
