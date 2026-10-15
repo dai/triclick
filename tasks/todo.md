@@ -5,12 +5,13 @@
 - [x] Rename Marketplace display name to TriClick while keeping the extension ID stable.
 - [x] Add the extension icon and update Japanese/English README plus changelog.
 - [x] Run tests, audit, package, and inspect the VSIX contents.
-- [x] Push to GitHub, publish 0.0.2 to Marketplace, and verify both listings.
+- [x] Push to GitHub and publish version 0.0.2 to Marketplace.
+- [ ] Verify that the Marketplace version history and icon have finished updating.
 
 ### Review
 
 - Published `dai.select-line-without-newline` 0.0.2 with `icon.png`; extension identifier remains stable.
-- Marketplace listing title now shows TriClick. The publication endpoint rejects a repeat upload as “0.0.2 already exists,” confirming publication; version history and `vsce show` are still serving stale 0.0.1 metadata at this check.
+- Marketplace listing title now shows TriClick, and the Marketplace publication endpoint rejects a repeat upload as “0.0.2 already exists.” However, the public version history, README, and icon still show the old listing during this check; `vsce show` also reports 0.0.1. Leave this verification open until the Marketplace finishes propagating the new package.
 - GitHub release v0.0.2 includes the packaged VSIX. Its SHA-256 matches the local package: `d70f9be16f713cfda8ce751ab1c9d2d6c62f8457d7fc69f7e1d9b708a3a80703`.
 - `npm test`: 19 passing; `npm audit --omit=dev`: 0 vulnerabilities; VSIX includes the 128x128 icon; GitHub CI passed all six OS/version jobs.
 - Marketplace browser upload could not set a file because Chrome's Codex extension lacks file-URL access; the same VSIX was published successfully with the authenticated VSCE CLI.
