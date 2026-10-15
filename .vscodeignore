@@ -5,3 +5,7 @@ src/**
 tsconfig.json
 .gitignore
 *.vsix
+tasks/**
+.github/**
+**/*.map
+package-lock.json

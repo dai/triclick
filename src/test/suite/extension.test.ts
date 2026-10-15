@@ -3,15 +3,11 @@ import * as vscode from 'vscode';
 import { adjustSelection } from '../../selectionAdjuster';
 
 suite('Extension Integration Test Suite', () => {
-  vscode.window.showInformationMessage('Start all tests.');
-
   test('拡張機能がロードされ、アクティベートできること', async () => {
     const ext = vscode.extensions.getExtension('dai.select-line-without-newline');
-    // パッケージ名やIDが取得できるか
-    if (ext) {
-      await ext.activate();
-      assert.strictEqual(ext.isActive, true);
-    }
+    assert.ok(ext, 'The extension must be available in the extension host');
+    await ext.activate();
+    assert.strictEqual(ext.isActive, true);
   });
 
   test('実ドキュメント上で adjustSelection が期待通り動作すること', async () => {
@@ -28,5 +24,40 @@ suite('Extension Integration Test Suite', () => {
     assert.strictEqual(adjusted.start.character, 0);
     assert.strictEqual(adjusted.end.line, 0);
     assert.strictEqual(adjusted.end.character, 19); // "Line 1: Hello World" は19文字
+  });
+
+  for (const eol of ['\n', '\r\n']) {
+    test(`Selected text excludes only the final ${JSON.stringify(eol)} newline`, async () => {
+      const doc = await vscode.workspace.openTextDocument({ content: ['first', 'second', 'last'].join(eol) });
+      const options = { enabled: true, handleMultiLine: true };
+      const single = adjustSelection(doc, new vscode.Selection(0, 0, 1, 0), options);
+      assert.ok(single);
+      assert.strictEqual(doc.getText(single), 'first');
+
+      const reversed = adjustSelection(doc, new vscode.Selection(2, 0, 0, 0), options);
+      assert.ok(reversed);
+      assert.strictEqual(reversed.isReversed, true);
+      assert.strictEqual(doc.getText(reversed), ['first', 'second'].join(eol));
+      assert.strictEqual(reversed.anchor.line, 1);
+      assert.strictEqual(reversed.anchor.character, 'second'.length);
+      assert.strictEqual(reversed.active.line, 0);
+      assert.strictEqual(reversed.active.character, 0);
+    });
+  }
+
+  test('A final line without a newline remains unchanged', async () => {
+    const doc = await vscode.workspace.openTextDocument({ content: 'first\nlast' });
+    const selection = new vscode.Selection(1, 0, 1, 4);
+    assert.strictEqual(adjustSelection(doc, selection, { enabled: true, handleMultiLine: true }), null);
+    assert.strictEqual(doc.getText(selection), 'last');
+  });
+
+  test('A trailing empty line preserves the preceding internal newline', async () => {
+    const doc = await vscode.workspace.openTextDocument({ content: 'first\n\nlast' });
+    const adjusted = adjustSelection(doc, new vscode.Selection(0, 0, 2, 0), { enabled: true, handleMultiLine: true });
+    assert.ok(adjusted);
+    assert.strictEqual(doc.getText(adjusted), 'first\n');
+    assert.strictEqual(adjusted.end.line, 1);
+    assert.strictEqual(adjusted.end.character, 0);
   });
 });

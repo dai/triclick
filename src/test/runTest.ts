@@ -6,7 +6,12 @@ async function main() {
     const extensionDevelopmentPath = path.resolve(__dirname, '../../');
     const extensionTestsPath = path.resolve(__dirname, './suite/index');
 
-    await runTests({ extensionDevelopmentPath, extensionTestsPath });
+    await runTests({
+      extensionDevelopmentPath,
+      extensionTestsPath,
+      version: process.env.VSCODE_TEST_VERSION || 'stable',
+      launchArgs: ['--disable-extensions', '--skip-welcome', '--skip-release-notes']
+    });
   } catch (err) {
     console.error('Failed to run tests', err);
     process.exit(1);

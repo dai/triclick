@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        vscode: ['1.90.0', stable]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run test:unit
+      - run: xvfb-run -a npm test
+        if: runner.os == 'Linux'
+        env:
+          VSCODE_TEST_VERSION: ${{ matrix.vscode }}
+      - run: npm test
+        if: runner.os != 'Linux'
+        env:
+          VSCODE_TEST_VERSION: ${{ matrix.vscode }}
+      - run: npm audit --audit-level=high
+      - run: npm run package
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.vscode == 'stable'
+        with:
+          name: extension-vsix
+          path: '*.vsix'

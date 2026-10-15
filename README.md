@@ -1,70 +1,157 @@
 # Select Line Without Newline
 
-A Visual Studio Code extension that automatically excludes trailing newline characters (`\r\n` or `\n`) when selecting lines via mouse triple-click or gutter (line number) click.
+[English follows below.](#english)
 
-VS Codeでマウスのトリプルクリック（または行番号のクリック）で行を選択した際に、**行末の改行コードを含めずにテキストのみを選択**する拡張機能です。
+VS Codeでマウスのトリプルクリックや行番号のクリックで行を選択した際に、**行末の改行コードを含めずにテキストを選択**する拡張機能です。
 
----
+## 特徴
 
-## 💡 特徴 / Features
+- 行末の改行コード（`\r\n` または `\n`）を選択範囲から除外し、コードやターミナルへの貼り付けに不要な末尾改行が入るのを防ぎます。
+- マウスによる行選択を自動補正します。キーボードやコマンドによる選択は変更しません。
+- ドラッグによる複数行選択では、最終行の末尾改行だけを除外します。行と行の間の改行は保持します。
+- マルチカーソル選択と、下から上への逆方向選択に対応しています。
+- 自動補正全体と複数行への適用を、それぞれ設定で無効にできます。
 
-- **不要な改行コードの混入を防止**:
-  行全体をトリプルクリックしてコピーし、別のコード行の途中やターミナルへインラインで貼り付ける際、不要な改行が入ってしまうストレスを解消します。
-- **直感的な操作感**:
-  マウス操作による行選択イベントを検知し、行頭から次行先頭への選択範囲を即座に行末文字手前まで自動補正します。
-- **複数行選択（ドラッグ）対応**:
-  トリプルクリック後に下へドラッグして複数行を選択した場合でも、最終行の末尾改行を除外します（設定でオフにすることも可能）。
-- **マルチカーソル・逆方向選択に対応**:
-  複数行のマルチカーソル選択や、下から上への逆方向選択にも対応しています。
+## インストール
 
----
+VS Code 1.90.0以降に対応しています。
 
-## ⚙️ 設定 / Configuration
+マーケットプレイス公開後は、拡張機能ビューで `dai.select-line-without-newline` を検索するか、以下を実行してインストールできます。
 
-VS Codeの設定（`Ctrl+,` または `Cmd+,`）から以下の項目をカスタマイズできます。
+```bash
+code --install-extension dai.select-line-without-newline
+```
 
-| 設定項目 | 型 | デフォルト値 | 説明 |
-| :--- | :--- | :--- | :--- |
-| `selectLineWithoutNewline.enabled` | `boolean` | `true` | 拡張機能による改行自動除外機能の有効 / 無効を切り替えます。 |
-| `selectLineWithoutNewline.handleMultiLine` | `boolean` | `true` | トリプルクリック後のドラッグによる複数行選択時にも、最終行の改行を除外するかどうかを設定します。 |
+### VSIXファイルからインストール
 
----
-
-## 📦 インストール方法 / Installation
-
-### `.vsix` ファイルからインストールする場合
-1. 生成された `.vsix` ファイル（例: `select-line-without-newline-0.0.1.vsix`）を用意します。
+1. [GitHub Releases](https://github.com/dai/vscode-select-line-without-newline/releases)に公開されたVSIX、またはローカルで生成した `select-line-without-newline-0.0.1.vsix` を用意します。
 2. VS Codeの拡張機能ビュー（`Ctrl+Shift+X` / `Cmd+Shift+X`）を開きます。
-3. ビュー右上の `...`（その他の操作）メニューから **「VSIX からのインストール... (Install from VSIX...)」** を選択し、`.vsix` ファイルを選択します。
-   - または、ターミナルで以下のコマンドを実行します：
-     ```bash
-     code --install-extension select-line-without-newline-0.0.1.vsix
-     ```
+3. ビュー右上の `...` メニューから **「VSIX からのインストール...」** を選び、VSIXファイルを指定します。
 
----
+ターミナルからインストールすることもできます。
 
-## 🛠️ 開発・ビルド / Development & Build
+```bash
+code --install-extension select-line-without-newline-0.0.1.vsix
+```
 
-### 必要要件
-- Node.js 20+
-- npm
+## 設定
 
-### スクリプト一覧
+VS Codeの設定（`Ctrl+,` / `Cmd+,`）で、以下の項目を変更できます。
+
+| 設定項目 | 型 | 初期値 | 説明 |
+| :--- | :--- | :--- | :--- |
+| `selectLineWithoutNewline.enabled` | `boolean` | `true` | 行末の改行を自動除外する機能の有効・無効を切り替えます。 |
+| `selectLineWithoutNewline.handleMultiLine` | `boolean` | `true` | 複数行の選択でも最終行の末尾改行を除外します。 |
+
+## 動作上の制限
+
+- VS Code APIはクリック回数を通知しないため、行頭から別の行頭までのマウス選択を行選択とみなします。通常のドラッグやShift+クリックでも、この条件に合えば補正されます。
+- キーボードやコマンドによる選択は補正しません。
+- 空行だけを選択すると、選択範囲は空になります。`editor.emptySelectionClipboard` が有効な場合、コピー操作で空行の改行が含まれることがあります。
+- 複数行では、選択末尾の改行だけを除外します。行と行の間の改行は保持します。
+- 対象はテキストエディターです。ターミナルやWebviewの選択は対象外です。
+
+## 開発・ビルド
+
+必要な環境は、Node.js 22.12以降とnpmです。これらは開発とパッケージ作成に使用します。
+
 ```bash
 # 依存パッケージのインストール
-npm install
+npm ci
 
-# TypeScript コンパイル
+# TypeScriptのコンパイル
 npm run compile
 
 # 単体・統合テストの実行
 npm test
 
-# VSIX パッケージのビルド・書き出し
+# VS Codeを起動せずに単体テストのみ実行
+npm run test:unit
+
+# VSIXパッケージのビルド・書き出し
 npm run package
 ```
 
+## ライセンス
+
+[MIT](LICENSE)
+
 ---
 
-## 📄 License
-MIT
+<a id="english"></a>
+
+## English
+
+A Visual Studio Code extension that **selects line text without its trailing newline** when you select lines using a mouse triple-click or a gutter (line number) click.
+
+### Features
+
+- Excludes trailing newline characters (`\r\n` or `\n`) from the selection, avoiding an unwanted final newline when pasting into code or a terminal.
+- Automatically adjusts mouse line selections. Keyboard and command selections remain unchanged.
+- Supports multi-line drag selections, removing only the final newline and preserving internal newlines.
+- Supports multiple selections and reversed selections from bottom to top.
+- Provides settings to disable automatic adjustment or its application to multi-line selections.
+
+### Installation
+
+Requires VS Code 1.90.0 or later.
+
+After the extension is published to the Marketplace, search for `dai.select-line-without-newline` in the Extensions view, or run:
+
+```bash
+code --install-extension dai.select-line-without-newline
+```
+
+#### Install from a VSIX file
+
+1. Obtain a VSIX published on [GitHub Releases](https://github.com/dai/vscode-select-line-without-newline/releases), or build `select-line-without-newline-0.0.1.vsix` locally.
+2. Open the Extensions view in VS Code (`Ctrl+Shift+X` / `Cmd+Shift+X`).
+3. Open the `...` menu at the top of the view, select **Install from VSIX...**, and choose the VSIX file.
+
+You can also install it from a terminal:
+
+```bash
+code --install-extension select-line-without-newline-0.0.1.vsix
+```
+
+### Configuration
+
+Open VS Code Settings (`Ctrl+,` / `Cmd+,`) to change these options.
+
+| Setting | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `selectLineWithoutNewline.enabled` | `boolean` | `true` | Enables or disables automatic exclusion of the trailing newline. |
+| `selectLineWithoutNewline.handleMultiLine` | `boolean` | `true` | Also excludes the final newline in multi-line selections. |
+
+### Limitations
+
+- The VS Code API does not report click counts, so the extension recognizes mouse selections from one line start to another as line selections. Ordinary drags and Shift-clicks matching this pattern are also adjusted.
+- Keyboard and command selections are not adjusted.
+- Selecting only an empty line collapses the selection. With `editor.emptySelectionClipboard` enabled, copying may still include that empty line's newline.
+- For multi-line selections, only the final newline is excluded. Internal newlines are preserved.
+- The extension handles text editors only. Terminal and Webview selections are not supported.
+
+### Development and build
+
+Node.js 22.12 or later and npm are required for development and packaging.
+
+```bash
+# Install dependencies
+npm ci
+
+# Compile TypeScript
+npm run compile
+
+# Run unit and integration tests
+npm test
+
+# Run unit tests without launching VS Code
+npm run test:unit
+
+# Build and write the VSIX package
+npm run package
+```
+
+### License
+
+[MIT](LICENSE)
