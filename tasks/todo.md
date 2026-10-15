@@ -44,3 +44,6 @@ Never record authentication secrets in repository files or logs.
 - GitHub CLI is authenticated as dai. Marketplace CLI token is expired;
   the user signed into the browser and publisher dai Owner access was verified.
 - Physical mouse-drag behavior has not yet been manually validated.
+- Initial GitHub CI passed 5/6 jobs. macOS stable failed before tests because
+  test-electron 2.5.2 expected the old Electron executable filename. Updated to
+  test-electron 3.1.0, which resolves the executable from the app bundle.
