@@ -5,9 +5,9 @@
   "version": "0.0.2",
   "publisher": "dai",
   "license": "MIT",
-  "homepage": "https://github.com/dai/vscode-select-line-without-newline#readme",
+  "homepage": "https://github.com/dai/triclick#readme",
   "bugs": {
-    "url": "https://github.com/dai/vscode-select-line-without-newline/issues"
+    "url": "https://github.com/dai/triclick/issues"
   },
   "keywords": [
     "selection",
@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dai/vscode-select-line-without-newline"
+    "url": "https://github.com/dai/triclick"
   },
   "activationEvents": [
     "onStartupFinished"
