@@ -1,6 +1,25 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { adjustSelection } from '../../selectionAdjuster';
+import {
+  adjustSelectionCore,
+  expandToLinesWithoutNewlineCore,
+  MinimalPosition,
+  SelectionAdjusterOptions
+} from '../../selectionAdjuster';
+
+function adjustSelection(
+  doc: vscode.TextDocument,
+  selection: vscode.Selection,
+  options: SelectionAdjusterOptions
+): vscode.Selection | null {
+  return adjustSelectionCore(
+    doc,
+    selection,
+    options,
+    (anchor: MinimalPosition, active: MinimalPosition) =>
+      new vscode.Selection(anchor.line, anchor.character, active.line, active.character)
+  );
+}
 
 suite('Extension Integration Test Suite', () => {
   test('拡張機能がロードされ、アクティベートできること', async () => {
@@ -44,6 +63,22 @@ suite('Extension Integration Test Suite', () => {
       assert.strictEqual(reversed.active.character, 0);
     });
   }
+
+  test('コマンドが登録されていること', async () => {
+    const commands = await vscode.commands.getCommands(true);
+    assert.ok(commands.includes('selectLineWithoutNewline.toggleEnabled'));
+    assert.ok(commands.includes('selectLineWithoutNewline.selectLine'));
+  });
+
+  test('expandToLinesWithoutNewlineCore expands a cursor to its line without a newline', async () => {
+    const doc = await vscode.workspace.openTextDocument({ content: 'first\nsecond\nlast' });
+    const expanded = expandToLinesWithoutNewlineCore(
+      doc,
+      new vscode.Selection(1, 3, 1, 3),
+      (anchor, active) => new vscode.Selection(anchor.line, anchor.character, active.line, active.character)
+    );
+    assert.strictEqual(doc.getText(expanded), 'second');
+  });
 
   test('A final line without a newline remains unchanged', async () => {
     const doc = await vscode.workspace.openTextDocument({ content: 'first\nlast' });

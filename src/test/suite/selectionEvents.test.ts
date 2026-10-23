@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as vm from 'vm';
 import * as vscode from 'vscode';
-import { adjustSelection } from '../../selectionAdjuster';
+import { adjustSelectionCore, expandToLinesWithoutNewlineCore } from '../../selectionAdjuster';
 
 // Load a fresh extension module without registering a second real VS Code listener.
 function createHarness(document: vscode.TextDocument, initialSelections: vscode.Selection[]) {
@@ -20,6 +20,11 @@ function createHarness(document: vscode.TextDocument, initialSelections: vscode.
   };
   const extensionExports: { activate?: (context: unknown) => void } = {};
   const mockVscode = {
+    Selection: vscode.Selection,
+    ConfigurationTarget: vscode.ConfigurationTarget,
+    commands: {
+      registerCommand() { return disposable; }
+    },
     TextEditorSelectionChangeKind: vscode.TextEditorSelectionChangeKind,
     window: {
       onDidChangeTextEditorSelection(callback: typeof listener) {
@@ -39,7 +44,7 @@ function createHarness(document: vscode.TextDocument, initialSelections: vscode.
     exports: extensionExports,
     require(id: string) {
       if (id === 'vscode') { return mockVscode; }
-      if (id === './selectionAdjuster') { return { adjustSelection }; }
+      if (id === './selectionAdjuster') { return { adjustSelectionCore, expandToLinesWithoutNewlineCore }; }
       throw new Error(`Unexpected dependency: ${id}`);
     }
   }, { filename: extensionPath });

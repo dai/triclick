@@ -9,3 +9,4 @@ tasks/**
 .github/**
 **/*.map
 package-lock.json
+eslint.config.mjs
