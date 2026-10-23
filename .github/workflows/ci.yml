@@ -23,6 +23,7 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - run: npm run lint
       - run: npm run test:unit
       - run: xvfb-run -a npm test
         if: runner.os == 'Linux'
@@ -32,7 +33,9 @@ jobs:
         if: runner.os != 'Linux'
         env:
           VSCODE_TEST_VERSION: ${{ matrix.vscode }}
-      - run: npm audit --audit-level=high
+      # 監査は出荷物に含まれる依存だけを対象にする（ランタイム依存は現在ゼロ）。
+      # 開発用依存の脆弱性対応は Dependabot の更新PRで追う。
+      - run: npm audit --omit=dev --audit-level=high
       - run: npm run package
       - uses: actions/upload-artifact@v4
         if: matrix.os == 'ubuntu-latest' && matrix.vscode == 'stable'

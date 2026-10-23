@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import {
   adjustSelectionCore,
+  expandToLinesWithoutNewlineCore,
   MinimalDocument,
   MinimalLine,
   MinimalPosition,
@@ -169,6 +170,42 @@ suite('SelectionAdjuster Test Suite', () => {
       (anchor, active) => ({ anchor, active })
     );
     assert.strictEqual(adjusted3, null);
+  });
+
+  test('行の途中のカーソルから、その行全体が改行なしで選択されること', () => {
+    const sel = createMockSelection(1, 5, 1, 5);
+    const expanded = expandToLinesWithoutNewlineCore(
+      sampleDoc,
+      sel,
+      (anchor, active) => ({ anchor, active })
+    );
+
+    assert.deepStrictEqual(expanded.anchor, { line: 1, character: 0 });
+    assert.deepStrictEqual(expanded.active, { line: 1, character: 17 });
+  });
+
+  test('部分選択は開始行から終了行までの行全体に広がること', () => {
+    const sel = createMockSelection(0, 5, 3, 2);
+    const expanded = expandToLinesWithoutNewlineCore(
+      sampleDoc,
+      sel,
+      (anchor, active) => ({ anchor, active })
+    );
+
+    assert.deepStrictEqual(expanded.anchor, { line: 0, character: 0 });
+    assert.deepStrictEqual(expanded.active, { line: 3, character: 13 });
+  });
+
+  test('終端が次行の行頭にある選択では、次行を含めないこと', () => {
+    const sel = createMockSelection(0, 0, 2, 0);
+    const expanded = expandToLinesWithoutNewlineCore(
+      sampleDoc,
+      sel,
+      (anchor, active) => ({ anchor, active })
+    );
+
+    assert.deepStrictEqual(expanded.anchor, { line: 0, character: 0 });
+    assert.deepStrictEqual(expanded.active, { line: 1, character: 17 });
   });
 
   test('enabled=false の場合は補正されないこと', () => {

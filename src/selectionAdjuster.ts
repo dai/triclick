@@ -1,5 +1,3 @@
-import type * as vscode from 'vscode';
-
 export interface SelectionAdjusterOptions {
   enabled: boolean;
   handleMultiLine: boolean;
@@ -37,7 +35,7 @@ export type SelectionFactory<T> = (anchor: MinimalPosition, active: MinimalPosit
  * 行末の改行文字（\r\n または \n）を含めないよう補正した選択範囲を返す。
  * 補正が不要な場合は null を返す。
  */
-export function adjustSelectionCore<T = vscode.Selection>(
+export function adjustSelectionCore<T>(
   document: MinimalDocument,
   selection: MinimalSelection,
   options: SelectionAdjusterOptions,
@@ -65,11 +63,6 @@ export function adjustSelectionCore<T = vscode.Selection>(
     const targetLine = document.lineAt(targetLineIndex);
     const newEnd = targetLine.range.end;
 
-    // すでに補正済み（end.line === targetLineIndex かつ end.character === targetLine.range.end.character）
-    if (end.line === newEnd.line && end.character === newEnd.character) {
-      return null;
-    }
-
     if (isReversed) {
       // 逆方向ドラッグ: anchor が end側、active が start側
       return createSelection(newEnd, start);
@@ -83,19 +76,24 @@ export function adjustSelectionCore<T = vscode.Selection>(
 }
 
 /**
- * VS Code環境用の標準ラッパー関数
+ * カーソル位置、または既存の選択範囲が属する行全体を、
+ * 最終行の行末の改行を含めずに選択する範囲を返す。
+ * キーボードから呼び出せるコマンド用で、マウス選択の補正とは独立している。
+ * 選択範囲の終端が行頭にある場合は、その行は範囲に含めない
+ * （行単位の選択が次行の先頭まで伸びているだけのため）。
  */
-export function adjustSelection(
-  document: vscode.TextDocument,
-  selection: vscode.Selection,
-  options: SelectionAdjusterOptions
-): vscode.Selection | null {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const vscode = require('vscode');
-  return adjustSelectionCore<vscode.Selection>(
-    document,
-    selection,
-    options,
-    (anchor, active) => new vscode.Selection(anchor.line, anchor.character, active.line, active.character)
-  );
+export function expandToLinesWithoutNewlineCore<T>(
+  document: MinimalDocument,
+  selection: MinimalSelection,
+  createSelection: SelectionFactory<T>
+): T {
+  const startLine = selection.start.line;
+  let endLine = selection.end.line;
+  if (!selection.isEmpty && selection.end.character === 0 && endLine > startLine) {
+    endLine -= 1;
+  }
+
+  const start: MinimalPosition = { line: startLine, character: 0 };
+  const end = document.lineAt(endLine).range.end;
+  return createSelection(start, end);
 }

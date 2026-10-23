@@ -1,0 +1,16 @@
+version: 2
+updates:
+  # 開発用依存（テスト・Lint・パッケージング）の更新を週次で提案する。
+  # 拡張機能自体にランタイム依存はないため、対象はすべて devDependencies。
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  # CI / リリースで使う GitHub Actions の更新も週次で提案する。
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

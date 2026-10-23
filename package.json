@@ -1,13 +1,13 @@
 {
   "name": "select-line-without-newline",
-  "displayName": "TriClick",
-  "description": "Exclude trailing newline character when selecting lines via mouse triple-click",
+  "displayName": "%extension.displayName%",
+  "description": "%extension.description%",
   "version": "0.0.2",
   "publisher": "dai",
   "license": "MIT",
-  "homepage": "https://github.com/dai/vscode-select-line-without-newline#readme",
+  "homepage": "https://github.com/dai/triclick#readme",
   "bugs": {
-    "url": "https://github.com/dai/vscode-select-line-without-newline/issues"
+    "url": "https://github.com/dai/triclick/issues"
   },
   "keywords": [
     "selection",
@@ -16,32 +16,43 @@
     "copy"
   ],
   "engines": {
-    "vscode": "^1.90.0"
+    "vscode": "^1.90.0",
+    "node": ">=22.12.0"
   },
   "categories": [
     "Other"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dai/vscode-select-line-without-newline"
+    "url": "https://github.com/dai/triclick"
   },
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "selectLineWithoutNewline.toggleEnabled",
+        "title": "%command.toggleEnabled.title%"
+      },
+      {
+        "command": "selectLineWithoutNewline.selectLine",
+        "title": "%command.selectLine.title%"
+      }
+    ],
     "configuration": {
-      "title": "TriClick",
+      "title": "%configuration.title%",
       "properties": {
         "selectLineWithoutNewline.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable or disable automatic exclusion of trailing newline on line selection."
+          "description": "%configuration.enabled.description%"
         },
         "selectLineWithoutNewline.handleMultiLine": {
           "type": "boolean",
           "default": true,
-          "description": "Also exclude trailing newline when selecting multiple lines via triple-click drag."
+          "description": "%configuration.handleMultiLine.description%"
         }
       }
     }
@@ -54,7 +65,8 @@
     "pretest:unit": "npm run compile",
     "test:unit": "mocha --ui tdd ./out/test/suite/selectionAdjuster.test.js",
     "test": "node ./out/test/runTest.js",
-    "package": "vsce package --no-git-tag-version"
+    "package": "vsce package --no-git-tag-version",
+    "lint": "eslint src"
   },
   "overrides": {
     "mocha": {
@@ -66,8 +78,11 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "20.x",
     "@types/vscode": "1.90.0",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
     "@vscode/test-electron": "^3.1.0",
     "@vscode/vsce": "^4.0.0",
+    "eslint": "^10.13.0",
     "glob": "^10.3.10",
     "mocha": "^11.8.0",
     "typescript": "^5.4.5"
