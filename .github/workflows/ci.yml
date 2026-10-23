@@ -37,7 +37,7 @@ jobs:
       # 開発用依存の脆弱性対応は Dependabot の更新PRで追う。
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run package
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: matrix.os == 'ubuntu-latest' && matrix.vscode == 'stable'
         with:
           name: extension-vsix
