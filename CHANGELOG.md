@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.0.3
 
 - Add commands: toggle automatic adjustment from the Command Palette, and select the current line(s) without a trailing newline as an explicit (keyboard-assignable) command.
 - Localize the extension description and setting descriptions (English and Japanese) with package.nls files.

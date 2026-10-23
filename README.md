@@ -25,14 +25,14 @@ code --install-extension dai.select-line-without-newline
 
 ### VSIXファイルからインストール
 
-1. [GitHub Releases](https://github.com/dai/triclick/releases)に公開されたVSIX、またはローカルで生成した `select-line-without-newline-0.0.2.vsix` を用意します。
+1. [GitHub Releases](https://github.com/dai/triclick/releases)に公開されたVSIX、またはローカルで生成した `select-line-without-newline-0.0.3.vsix` を用意します。
 2. VS Codeの拡張機能ビュー（`Ctrl+Shift+X` / `Cmd+Shift+X`）を開きます。
 3. ビュー右上の `...` メニューから **「VSIX からのインストール...」** を選び、VSIXファイルを指定します。
 
 ターミナルからインストールすることもできます。
 
 ```bash
-code --install-extension select-line-without-newline-0.0.2.vsix
+code --install-extension select-line-without-newline-0.0.3.vsix
 ```
 
 ## 設定
@@ -117,14 +117,14 @@ code --install-extension dai.select-line-without-newline
 
 #### Install from a VSIX file
 
-1. Obtain a VSIX published on [GitHub Releases](https://github.com/dai/triclick/releases), or build `select-line-without-newline-0.0.2.vsix` locally.
+1. Obtain a VSIX published on [GitHub Releases](https://github.com/dai/triclick/releases), or build `select-line-without-newline-0.0.3.vsix` locally.
 2. Open the Extensions view in VS Code (`Ctrl+Shift+X` / `Cmd+Shift+X`).
 3. Open the `...` menu at the top of the view, select **Install from VSIX...**, and choose the VSIX file.
 
 You can also install it from a terminal:
 
 ```bash
-code --install-extension select-line-without-newline-0.0.2.vsix
+code --install-extension select-line-without-newline-0.0.3.vsix
 ```
 
 ### Configuration
