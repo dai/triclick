@@ -1,9 +1,14 @@
 import * as path from 'path';
-import * as Mocha from 'mocha';
 import { glob } from 'glob';
 
+type MochaConstructor = typeof import('mocha');
+
+const loadModule = new Function('specifier', 'return import(specifier);') as (
+  specifier: string
+) => Promise<{ default: MochaConstructor }>;
+
 export async function run(): Promise<void> {
-  // Mocha インスタンスの作成
+  const { default: Mocha } = await loadModule('mocha');
   const mocha = new Mocha({
     ui: 'tdd',
     color: true,
@@ -19,7 +24,7 @@ export async function run(): Promise<void> {
     files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
 
     return new Promise((resolve, reject) => {
-      mocha.run((failures) => {
+      mocha.run((failures: number) => {
         if (failures > 0) {
           reject(new Error(`${failures} tests failed.`));
         } else {
