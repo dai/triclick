@@ -4,6 +4,12 @@
 
 VS Codeでマウスのトリプルクリックや行番号のクリックで行を選択した際に、**行末の改行コードを含めずにテキストを選択**する拡張機能です。
 
+## 操作デモ
+
+![TriClickの操作デモ。プレビューをクリックするとMP4動画を開きます](media/triclick-demo.gif)
+
+[元の動画を再生する（MP4）](media/triclick-demo.mp4)
+
 ## 特徴
 
 - 行末の改行コード（`\r\n` または `\n`）を選択範囲から除外し、コードやターミナルへの貼り付けに不要な末尾改行が入るのを防ぎます。
@@ -95,6 +101,12 @@ npm run package
 ## English
 
 A Visual Studio Code extension that **selects line text without its trailing newline** when you select lines using a mouse triple-click or a gutter (line number) click.
+
+### Demo
+
+![TriClick demo. Click the preview to open the MP4 video](media/triclick-demo.gif)
+
+[Open the original video (MP4)](media/triclick-demo.mp4)
 
 ### Features
 
