@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Align README demo previews so clicking the GIF opens the MP4, and match the Marketplace / settings copy to the README (gutter click, multi-line selection wording).
+
 ## 0.0.3
 
 - Add commands: toggle automatic adjustment from the Command Palette, and select the current line(s) without a trailing newline as an explicit (keyboard-assignable) command.

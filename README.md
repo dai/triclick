@@ -6,7 +6,7 @@ VS Codeでマウスのトリプルクリックや行番号のクリックで行�
 
 ## 操作デモ
 
-![TriClickの操作デモ。プレビューをクリックするとMP4動画を開きます](media/triclick-demo.gif)
+[![TriClickの操作デモ。プレビューをクリックするとMP4動画を開きます](media/triclick-demo.gif)](media/triclick-demo.mp4)
 
 [元の動画を再生する（MP4）](media/triclick-demo.mp4)
 
@@ -104,7 +104,7 @@ A Visual Studio Code extension that **selects line text without its trailing new
 
 ### Demo
 
-![TriClick demo. Click the preview to open the MP4 video](media/triclick-demo.gif)
+[![TriClick demo. Click the preview to open the MP4 video](media/triclick-demo.gif)](media/triclick-demo.mp4)
 
 [Open the original video (MP4)](media/triclick-demo.mp4)
 
