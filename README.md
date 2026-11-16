@@ -20,6 +20,7 @@ VS Codeでマウスのトリプルクリックや行番号のクリックで行�
 - マルチカーソル選択と、下から上への逆方向選択に対応しています。
 - 自動補正全体と複数行への適用を、それぞれ設定で無効にできます。
 - コマンドパレットから自動補正の有効/無効を切り替えられます。また、キーボードショートカットを割り当てて使える、明示的な「改行を含めずに行を選択」コマンドも用意しています。
+- ステータスバーに現在の有効/無効を表示します。クリックするだけで切り替えられるため、設定画面を開く必要はありません。
 
 ## インストール
 
@@ -62,6 +63,8 @@ VS Codeの設定（`Ctrl+,` / `Cmd+,`）で、以下の項目を変更できま�
 | TriClick: 改行を含めずに行を選択 | カーソル位置の行、または選択範囲が属する行全体を、行末の改行を含めずに選択します。自動補正とは独立した明示的なコマンドです。 |
 
 「改行を含めずに行を選択」には既定のキーバインドはありません。キーボードショートカットの設定でコマンド `selectLineWithoutNewline.selectLine` に任意のキーを割り当ててください。
+
+このコマンドはエディタの右クリックメニューからも実行できます。また、自動補正の有効/無効はステータスバー右側の **TriClick** をクリックしても切り替えられます（無効時は警告色で表示されます）。
 
 ## 動作上の制限
 
@@ -120,6 +123,7 @@ A Visual Studio Code extension that **selects line text without its trailing new
 - Supports multiple selections and reversed selections from bottom to top.
 - Provides settings to disable automatic adjustment or its application to multi-line selections.
 - Provides a Command Palette toggle for automatic adjustment, and an explicit "select line without newline" command that you can bind to a keyboard shortcut.
+- Shows the current on/off state in the status bar. Click it to toggle, so you never have to open the settings editor.
 
 ### Installation
 
@@ -162,6 +166,8 @@ Run these from the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
 | TriClick: Select Line(s) Without Newline | Selects the line at the cursor, or every line spanned by the selection, without the trailing newline. This is an explicit command, independent of the automatic mouse adjustment. |
 
 The select-line command has no default keybinding. Assign any key to the command `selectLineWithoutNewline.selectLine` in the Keyboard Shortcuts settings.
+
+You can also run the command from the editor's context menu, and toggle automatic adjustment by clicking **TriClick** on the right side of the status bar (it turns warning-colored while disabled).
 
 ### Limitations
 

@@ -30,6 +30,7 @@
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "contributes": {
     "commands": [
       {
@@ -38,9 +39,24 @@
       },
       {
         "command": "selectLineWithoutNewline.selectLine",
-        "title": "%command.selectLine.title%"
+        "title": "%command.selectLine.title%",
+        "enablement": "editorIsOpen"
       }
     ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "selectLineWithoutNewline.selectLine",
+          "when": "editorIsOpen"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "selectLineWithoutNewline.selectLine",
+          "group": "9_cutcopypaste@100"
+        }
+      ]
+    },
     "configuration": {
       "title": "%configuration.title%",
       "properties": {

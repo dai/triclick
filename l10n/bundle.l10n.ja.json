@@ -1,0 +1,5 @@
+{
+  "TriClick automatic adjustment is off. Click to enable.": "TriClick: 自動補正は無効です。クリックで有効にします。",
+  "TriClick is enabled: mouse line selections exclude the trailing newline, including multi-line selections. Click to disable.": "TriClick: 有効です。マウスでの行選択から末尾の改行を除外します（複数行の選択も対象）。クリックで無効にします。",
+  "TriClick is enabled: mouse line selections exclude the trailing newline. Multi-line selections are left unchanged. Click to disable.": "TriClick: 有効です。マウスでの行選択から末尾の改行を除外します（複数行の選択は変更しません）。クリックで無効にします。"
+}

@@ -3,6 +3,10 @@
 ## Unreleased
 
 - Align README demo previews so clicking the GIF opens the MP4, and match the Marketplace / settings copy to the README (gutter click, multi-line selection wording).
+- Show the current on/off state in the status bar and toggle automatic adjustment by clicking it.
+- Write the toggle to the scope that currently defines `selectLineWithoutNewline.enabled`, so a workspace override no longer makes the toggle appear to do nothing.
+- Replace the toggle's information message with the status bar indicator (with localized tooltips).
+- Add the select-line command to the editor context menu and hide it from the Command Palette when no text editor is open.
 
 ## 0.0.3
 
