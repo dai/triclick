@@ -5,14 +5,34 @@ import * as vm from 'vm';
 import * as vscode from 'vscode';
 import { adjustSelectionCore, expandToLinesWithoutNewlineCore } from '../../selectionAdjuster';
 
+interface MockStatusBarItem {
+  text: string;
+  tooltip: unknown;
+  command?: string;
+  backgroundColor: unknown;
+  show(): void;
+  hide(): void;
+  dispose(): void;
+}
+
+interface SettingUpdate {
+  key: string;
+  value: unknown;
+  target: vscode.ConfigurationTarget;
+}
+
 // Load a fresh extension module without registering a second real VS Code listener.
 function createHarness(document: vscode.TextDocument, initialSelections: vscode.Selection[]) {
   let listener: ((event: vscode.TextEditorSelectionChangeEvent) => void) | undefined;
   let writes = 0;
   let selections = initialSelections;
+  let workspaceValue: boolean | undefined;
   const settings: Record<string, boolean> = { enabled: true, handleMultiLine: true };
   const disposable = { dispose() {} };
   const subscriptions: vscode.Disposable[] = [];
+  const statusBarItems: MockStatusBarItem[] = [];
+  const settingUpdates: SettingUpdate[] = [];
+  const handlers: Record<string, () => unknown> = {};
   const editor = {
     document,
     get selections() { return selections; },
@@ -21,21 +41,53 @@ function createHarness(document: vscode.TextDocument, initialSelections: vscode.
   const extensionExports: { activate?: (context: unknown) => void } = {};
   const mockVscode = {
     Selection: vscode.Selection,
+    ThemeColor: vscode.ThemeColor,
+    StatusBarAlignment: vscode.StatusBarAlignment,
     ConfigurationTarget: vscode.ConfigurationTarget,
-    commands: {
-      registerCommand() { return disposable; }
-    },
     TextEditorSelectionChangeKind: vscode.TextEditorSelectionChangeKind,
+    l10n: {
+      t: (message: string) => message
+    },
+    commands: {
+      registerCommand(id: string, callback: () => unknown) {
+        handlers[id] = callback;
+        return disposable;
+      }
+    },
     window: {
       onDidChangeTextEditorSelection(callback: typeof listener) {
         listener = callback;
         return disposable;
+      },
+      createStatusBarItem() {
+        const item: MockStatusBarItem = {
+          text: '',
+          tooltip: undefined,
+          command: undefined,
+          backgroundColor: undefined,
+          show() {},
+          hide() {},
+          dispose() {}
+        };
+        statusBarItems.push(item);
+        return item;
       }
     },
     workspace: {
       getConfiguration(section: string) {
         assert.strictEqual(section, 'selectLineWithoutNewline');
-        return { get: (key: string, fallback: boolean) => settings[key] ?? fallback };
+        return {
+          get: (key: string, fallback: boolean) => settings[key] ?? fallback,
+          inspect: (key: string) =>
+            key === 'enabled' && workspaceValue !== undefined ? { workspaceValue } : {},
+          update: async (key: string, value: unknown, target: vscode.ConfigurationTarget) => {
+            settingUpdates.push({ key, value, target });
+            settings[key] = value as boolean;
+          }
+        };
+      },
+      onDidChangeConfiguration() {
+        return disposable;
       }
     }
   };
@@ -55,7 +107,15 @@ function createHarness(document: vscode.TextDocument, initialSelections: vscode.
   return {
     editor,
     settings,
+    statusBarItems,
+    settingUpdates,
     get writes() { return writes; },
+    setWorkspaceValue(value: boolean | undefined) { workspaceValue = value; },
+    async runCommand(id: string) {
+      const handler = handlers[id];
+      assert.ok(handler, `${id} must be registered`);
+      await handler();
+    },
     emit(kind: vscode.TextEditorSelectionChangeKind | undefined) {
       listener!({ textEditor: editor as unknown as vscode.TextEditor, selections, kind });
     }
@@ -107,5 +167,40 @@ suite('Selection event handling', () => {
     harness.emit(vscode.TextEditorSelectionChangeKind.Mouse);
     assert.strictEqual(harness.writes, 0);
     assert.strictEqual(harness.editor.selections[0], selection);
+  });
+
+  test('Status bar shows the current enabled state', async () => {
+    const doc = await vscode.workspace.openTextDocument({ content: 'first\nsecond' });
+    const harness = createHarness(doc, []);
+    assert.strictEqual(harness.statusBarItems.length, 1);
+    assert.strictEqual(harness.statusBarItems[0].text, '$(check) TriClick');
+    assert.strictEqual(harness.statusBarItems[0].command, 'selectLineWithoutNewline.toggleEnabled');
+  });
+
+  test('Toggle writes to the workspace scope when the workspace overrides enabled', async () => {
+    const doc = await vscode.workspace.openTextDocument({ content: 'first\nsecond' });
+    const harness = createHarness(doc, []);
+    harness.settings.enabled = false;
+    harness.setWorkspaceValue(false);
+
+    await harness.runCommand('selectLineWithoutNewline.toggleEnabled');
+
+    assert.deepStrictEqual(harness.settingUpdates, [
+      { key: 'enabled', value: true, target: vscode.ConfigurationTarget.Workspace }
+    ]);
+    assert.strictEqual(harness.statusBarItems[0].text, '$(check) TriClick');
+  });
+
+  test('Toggle falls back to the global scope when no override exists', async () => {
+    const doc = await vscode.workspace.openTextDocument({ content: 'first\nsecond' });
+    const harness = createHarness(doc, []);
+    harness.settings.enabled = true;
+
+    await harness.runCommand('selectLineWithoutNewline.toggleEnabled');
+
+    assert.deepStrictEqual(harness.settingUpdates, [
+      { key: 'enabled', value: false, target: vscode.ConfigurationTarget.Global }
+    ]);
+    assert.strictEqual(harness.statusBarItems[0].text, '$(circle-slash) TriClick');
   });
 });
